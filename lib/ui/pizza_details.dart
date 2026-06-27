@@ -1,41 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pizzeria/ui/share/appbar_widget.dart';
 import 'package:pizzeria/ui/share/buy_button_widget.dart';
 import 'package:pizzeria/ui/share/pizzeria_style.dart';
 import 'package:pizzeria/ui/share/total_widget.dart';
 
+import '../models/cart.dart';
 import '../models/option_item.dart';
 import '../models/pizza.dart';
 
 class PizzaDetails extends StatefulWidget {
-  final Pizza _pizza;
+  final Pizza pizza;
+  final Cart cart;
 
   const PizzaDetails({
-    Key? key,
-    required Pizza pizza,
-  })  : _pizza = pizza,
-        super(key: key);
+    super.key,
+    required this.pizza,
+    required this.cart,
+  });
 
   @override
-  _PizzaDetailsState createState() => _PizzaDetailsState();
+  State<PizzaDetails> createState() => _PizzaDetailsState();
 }
 
 class _PizzaDetailsState extends State<PizzaDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget._pizza.title),
-      ),
+      appBar: AppBarWidget(title: widget.pizza.title, cart: widget.cart),
       body: ListView(
         padding: const EdgeInsets.all(4.0),
         children: [
           Text(
-            widget._pizza.title,
+            widget.pizza.title,
             style: PizzeriaStyle.pageTitleStyle,
           ),
           Image.asset(
-            'assets/images/pizzas/${widget._pizza.image}',
+            'assets/images/pizzas/${widget.pizza.image}',
             height: 180,
           ),
           Text(
@@ -44,7 +44,7 @@ class _PizzaDetailsState extends State<PizzaDetails> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
-            child: Text(widget._pizza.garniture),
+            child: Text(widget.pizza.garniture),
           ),
           Text(
             'Pâte et taille sélectionnées',
@@ -62,8 +62,8 @@ class _PizzaDetailsState extends State<PizzaDetails> {
             style: PizzeriaStyle.headerTextStyle,
           ),
           _buildDropDownSauces(),
-          TotalWidget(total: widget._pizza.total),
-          BuyButtonWidget(),
+          TotalWidget(total: widget.pizza.total),
+          BuyButtonWidget(widget.pizza, widget.cart),
         ],
       ),
     );
@@ -72,12 +72,12 @@ class _PizzaDetailsState extends State<PizzaDetails> {
   Widget _buildDropDownPates() {
     return DropdownButton<OptionItem>(
       isExpanded: true,
-      value: Pizza.pates[widget._pizza.pate],
+      value: Pizza.pates[widget.pizza.pate],
       items: _buildDropDownItem(Pizza.pates),
       onChanged: (item) {
         if (item != null) {
           setState(() {
-            widget._pizza.pate = item.value;
+            widget.pizza.pate = item.value;
           });
         }
       },
@@ -87,12 +87,12 @@ class _PizzaDetailsState extends State<PizzaDetails> {
   Widget _buildDropDownTailles() {
     return DropdownButton<OptionItem>(
       isExpanded: true,
-      value: Pizza.tailles[widget._pizza.taille],
+      value: Pizza.tailles[widget.pizza.taille],
       items: _buildDropDownItem(Pizza.tailles),
       onChanged: (item) {
         if (item != null) {
           setState(() {
-            widget._pizza.taille = item.value;
+            widget.pizza.taille = item.value;
           });
         }
       },
@@ -102,12 +102,12 @@ class _PizzaDetailsState extends State<PizzaDetails> {
   Widget _buildDropDownSauces() {
     return DropdownButton<OptionItem>(
       isExpanded: true,
-      value: Pizza.sauces[widget._pizza.sauce],
+      value: Pizza.sauces[widget.pizza.sauce],
       items: _buildDropDownItem(Pizza.sauces),
       onChanged: (item) {
         if (item != null) {
           setState(() {
-            widget._pizza.sauce = item.value;
+            widget.pizza.sauce = item.value;
           });
         }
       },

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../models/cart.dart';
+import '../../models/pizza.dart';
+
 class BuyButtonWidget extends StatelessWidget {
-  const BuyButtonWidget({super.key});
+  final Pizza _pizza;
+  final Cart _cart;
+  const BuyButtonWidget(this._pizza, this._cart, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +19,7 @@ class BuyButtonWidget extends StatelessWidget {
           ),
           onPressed: () {
             print('Commander une pizza');
+            _cart.addProduct(_pizza);
           },
           child: const Row(
             mainAxisSize: MainAxisSize.min,

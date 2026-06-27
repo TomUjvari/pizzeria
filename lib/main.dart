@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pizzeria/models/cart.dart';
 import 'package:pizzeria/ui/pizza_list.dart';
-
+import 'package:pizzeria/ui/share/appbar_widget.dart';
 import 'models/menu.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   final String title;
+  final Cart _cart = Cart();
   MyHomePage({required this.title, super.key});
 
   final _menus = [
@@ -36,9 +38,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBarWidget(title: title, cart: _cart),
       body: ListView.builder(
         itemCount: _menus.length,
         itemBuilder: (context, index) => InkWell(
@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
               case 2: // Pizza
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PizzaList()),
+                  MaterialPageRoute(builder: (context) => PizzaList(cart: _cart)),
                 );
                 break;
               default:
@@ -61,39 +61,38 @@ class MyHomePage extends StatelessWidget {
 
     );
   }
-}
 
-
-Widget _buildRow(Menu menu) {
-  return Container(
-    height: 180,
-    decoration: BoxDecoration(
-      color: menu.color,
-      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-    ),
-    margin: EdgeInsets.all(4.0),
-    child: Column(
-      children: <Widget>[
-        Expanded(
-          child: Image.asset(
-            'assets/images/menus/${menu.image}',
-            fit: BoxFit.fitWidth,
+  Widget _buildRow(Menu menu) {
+    return Container(
+      height: 180,
+      decoration: BoxDecoration(
+        color: menu.color,
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+      ),
+      margin: EdgeInsets.all(4.0),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: Image.asset(
+              'assets/images/menus/${menu.image}',
+              fit: BoxFit.fitWidth,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 50,
-          child: Center(
-            child: Text(
-              menu.title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Roboto',
-                fontSize: 28,
+          SizedBox(
+            height: 50,
+            child: Center(
+              child: Text(
+                menu.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
+                  fontSize: 28,
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pizzeria/ui/pizza_details.dart';
+import 'package:pizzeria/ui/share/appbar_widget.dart';
 import 'package:pizzeria/ui/share/buy_button_widget.dart';
+import '../models/cart.dart';
 import '../models/pizza.dart';
 import '../models/pizza_data.dart';
 
 class PizzaList extends StatefulWidget {
-  const PizzaList({super.key});
+  final Cart cart;
+  const PizzaList({required this.cart, super.key});
 
   @override
   State<PizzaList> createState() => _PizzaListState();
@@ -23,9 +26,7 @@ class _PizzaListState extends State<PizzaList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Nos Pizzas"),
-      ), // AppBar
+      appBar: AppBarWidget(title: "Nos Pizzas", cart: widget.cart),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),
         itemCount: _pizzas.length,
@@ -36,7 +37,7 @@ class _PizzaListState extends State<PizzaList> {
     );
   }
 
-  _buildRow(Pizza pizza) {
+  Widget _buildRow(Pizza pizza) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -50,18 +51,18 @@ class _PizzaListState extends State<PizzaList> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza)),
+                MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza, cart: widget.cart)),
               );
             },
             child: _buildPizzaDetails(pizza),
           ),
-          BuyButtonWidget(),
+          BuyButtonWidget(pizza, widget.cart),
         ],
       ),
     );
   }
 
-  _buildPizzaDetails(Pizza pizza) {
+  Widget _buildPizzaDetails(Pizza pizza) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
