@@ -7,6 +7,7 @@ import 'package:pizzeria/ui/share/total_widget.dart';
 import '../models/cart.dart';
 import '../models/option_item.dart';
 import '../models/pizza.dart';
+import '../service/pizzeria_service.dart';
 
 class PizzaDetails extends StatefulWidget {
   final Pizza pizza;
@@ -34,9 +35,11 @@ class _PizzaDetailsState extends State<PizzaDetails> {
             widget.pizza.title,
             style: PizzeriaStyle.pageTitleStyle,
           ),
-          Image.asset(
-            'assets/images/pizzas/${widget.pizza.image}',
+          Image.network(
+            '${PizzeriaService.imageUri}/${widget.pizza.image}',
             height: 180,
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error, size: 180),
           ),
           Text(
             'Recette',
