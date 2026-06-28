@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pizzeria/models/pizza.dart';
 import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import '../service/pizzeria_service.dart';
@@ -42,8 +43,7 @@ class Panier extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: cart.totalItems() == 0 ? null : () {
-                print('Commande validée pour un montant de ${format.format(cart.totalPrice)}');
-                // On pourrait vider le panier ou naviguer vers une page de confirmation
+                Navigator.pushNamed(context, '/confirmation');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
@@ -74,19 +74,23 @@ class _CartList extends StatelessWidget {
       itemCount: cart.totalItems(),
       itemBuilder: (context, index) {
         var cartItem = cart.getCartItem(index);
+        var product = cartItem.product;
+
         return Card(
           child: ListTile(
-            leading: Image.network(
-              '${PizzeriaService.imageUri}/${cartItem.pizza.image}',
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.local_pizza),
-            ),
-            title: Text(cartItem.pizza.title),
+            leading: product is Pizza
+              ? Image.network(
+                  '${PizzeriaService.imageUri}/${product.image}',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.local_pizza),
+                )
+              : const Icon(Icons.local_drink, size: 50, color: Colors.blue),
+            title: Text(product.title),
             subtitle: Text(
-              'Prix : ${format.format(cartItem.pizza.total)}\n'
-              'Sous-total : ${format.format(cartItem.pizza.total * cartItem.quantity)}',
+              'Prix : ${format.format(product.total)}\n'
+              'Sous-total : ${format.format(product.total * cartItem.quantity)}',
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -94,13 +98,13 @@ class _CartList extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.remove_circle_outline),
                   color: Colors.red,
-                  onPressed: () => cart.removeProduct(cartItem.pizza),
+                  onPressed: () => cart.removeProduct(product),
                 ),
                 Text('${cartItem.quantity}', style: const TextStyle(fontSize: 16)),
                 IconButton(
                   icon: const Icon(Icons.add_circle_outline),
                   color: Colors.green,
-                  onPressed: () => cart.addProduct(cartItem.pizza),
+                  onPressed: () => cart.addProduct(product),
                 ),
               ],
             ),

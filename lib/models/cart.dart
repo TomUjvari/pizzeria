@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:pizzeria/models/pizza.dart';
+import 'product.dart';
 
 class CartItem {
-  final Pizza pizza;
+  final Product product;
   int quantity;
 
-  CartItem(this.pizza, [this.quantity = 1]);
+  CartItem(this.product, [this.quantity = 1]);
 }
 
 class Cart extends ChangeNotifier {
@@ -19,10 +19,10 @@ class Cart extends ChangeNotifier {
     return _items[index];
   }
 
-  void addProduct(Pizza pizza) {
-    int index = findCartItemIndex(pizza.id);
+  void addProduct(Product product) {
+    int index = findCartItemIndex(product);
     if (index == -1) {
-      _items.add(CartItem(pizza));
+      _items.add(CartItem(product));
     } else {
       CartItem item = _items[index];
       item.quantity++;
@@ -30,8 +30,8 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeProduct(Pizza pizza) {
-    int index = findCartItemIndex(pizza.id);
+  void removeProduct(Product product) {
+    int index = findCartItemIndex(product);
     if (index != -1) {
       CartItem item = _items[index];
       if (--item.quantity == 0) {
@@ -41,15 +41,22 @@ class Cart extends ChangeNotifier {
     }
   }
 
-  int findCartItemIndex(int id) {
-    return _items.indexWhere((element) => element.pizza.id == id);
+  int findCartItemIndex(Product product) {
+    return _items.indexWhere((element) => 
+      element.product.id == product.id && element.product.runtimeType == product.runtimeType
+    );
   }
 
   double get totalPrice {
     double total = 0;
     for (var item in _items) {
-      total += item.pizza.total * item.quantity;
+      total += item.product.total * item.quantity;
     }
     return total;
+  }
+
+  void clear() {
+    _items.clear();
+    notifyListeners();
   }
 }

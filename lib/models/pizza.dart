@@ -1,11 +1,8 @@
 import 'option_item.dart';
+import 'product.dart';
 
-class Pizza {
-  final int id;
-  final String title;
+class Pizza extends Product {
   final String garniture;
-  final String image;
-  final double price;
 
   // La sélection de l'utilisateur
   int pate = 0;
@@ -30,6 +27,7 @@ class Pizza {
     OptionItem(1, "Sauce Samouraï", supplement: 2),
   ];
 
+  @override
   double get total {
     double total = price;
     total += pates[pate].supplement;
@@ -38,13 +36,15 @@ class Pizza {
     return total;
   }
 
-  Pizza({required this.id, required this.title, required this.garniture,
-    required this.image, required this.price});
+  Pizza({required super.id, required super.title, required this.garniture,
+    required super.image, required super.price});
 
   Pizza.fromJson(Map<String, dynamic> json) :
-        id = json['id'],
-        title = json['title'],
         garniture = json['garniture'],
-        image = json['image'],
-        price = json["price"];
+        super(
+          id: json['id'],
+          title: json['title'],
+          image: json['image'],
+          price: json["price"].toDouble(),
+        );
 }

@@ -21,6 +21,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
+            Navigator.pushNamed(context, '/profil');
+          },
+          icon: const Icon(Icons.person),
+        ),
+        IconButton(
+          onPressed: () {
             Navigator.pushNamed(context, '/panier');
           },
           icon: Badge(

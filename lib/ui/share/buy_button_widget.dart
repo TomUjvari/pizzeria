@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/cart.dart';
-import '../../models/pizza.dart';
+import '../../models/product.dart';
 
 class BuyButtonWidget extends StatelessWidget {
-  final Pizza _pizza;
-  const BuyButtonWidget(this._pizza, {super.key});
+  final Product _product;
+  const BuyButtonWidget(this._product, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +23,10 @@ class BuyButtonWidget extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              cart.addProduct(_pizza);
+              cart.addProduct(_product);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${_pizza.title} ajouté au panier'),
+                  content: Text('${_product.title} ajouté au panier'),
                   duration: const Duration(seconds: 1),
                 ),
               );
