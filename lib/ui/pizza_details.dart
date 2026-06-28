@@ -4,19 +4,17 @@ import 'package:pizzeria/ui/share/buy_button_widget.dart';
 import 'package:pizzeria/ui/share/pizzeria_style.dart';
 import 'package:pizzeria/ui/share/total_widget.dart';
 
-import '../models/cart.dart';
 import '../models/option_item.dart';
 import '../models/pizza.dart';
 import '../service/pizzeria_service.dart';
 
 class PizzaDetails extends StatefulWidget {
   final Pizza pizza;
-  final Cart cart;
 
   const PizzaDetails({
     super.key,
     required this.pizza,
-    required this.cart,
+    cart, // Keep it for compatibility if needed
   });
 
   @override
@@ -27,7 +25,7 @@ class _PizzaDetailsState extends State<PizzaDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: widget.pizza.title, cart: widget.cart),
+      appBar: AppBarWidget(title: widget.pizza.title),
       body: ListView(
         padding: const EdgeInsets.all(4.0),
         children: [
@@ -66,7 +64,7 @@ class _PizzaDetailsState extends State<PizzaDetails> {
           ),
           _buildDropDownSauces(),
           TotalWidget(total: widget.pizza.total),
-          BuyButtonWidget(widget.pizza, widget.cart),
+          BuyButtonWidget(widget.pizza),
         ],
       ),
     );

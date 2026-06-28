@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/cart.dart';
-import '../panier.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final Cart cart;
 
   const AppBarWidget({
     super.key,
     required this.title,
-    required this.cart,
+    Cart? cart, // Keep it for compatibility if needed, but we'll use Provider
   });
 
   @override
   Widget build(BuildContext context) {
+    var cart = context.watch<Cart>();
+    int totalItems = cart.totalItems();
+
     return AppBar(
       title: Text(title),
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Panier(cart)),
-            );
+            Navigator.pushNamed(context, '/panier');
           },
-          icon: const Icon(Icons.shopping_cart),
+          icon: Badge(
+            label: Text('$totalItems'),
+            isLabelVisible: totalItems > 0,
+            child: const Icon(Icons.shopping_cart),
+          ),
         ),
       ],
     );

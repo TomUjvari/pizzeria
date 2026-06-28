@@ -3,34 +3,30 @@ import 'package:pizzeria/ui/pizza_details.dart';
 import 'package:pizzeria/ui/share/appbar_widget.dart';
 import 'package:pizzeria/ui/share/buy_button_widget.dart';
 import 'package:pizzeria/ui/share/pizzeria_style.dart';
-import '../models/cart.dart';
 import '../models/pizza.dart';
 import '../service/pizzeria_service.dart';
 
 class PizzaList extends StatefulWidget {
-  final Cart cart;
-  const PizzaList({required this.cart, super.key});
+  const PizzaList({super.key, cart}); // Keep cart for compatibility if needed
 
   @override
   State<PizzaList> createState() => _PizzaListState();
 }
 
 class _PizzaListState extends State<PizzaList> {
-// La liste des pizzas
   late Future<List<Pizza>> _pizzas;
-
   final PizzeriaService _service = PizzeriaService();
 
   @override
   void initState() {
+    super.initState();
     _pizzas = _service.fetchPizzas();
-    print(_pizzas);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: 'Nos Pizzas', cart: widget.cart),
+      appBar: const AppBarWidget(title: 'Nos Pizzas'),
       body: FutureBuilder<List<Pizza>>(
         future: _pizzas,
         builder: (context, snapshot) {
@@ -40,11 +36,11 @@ class _PizzaListState extends State<PizzaList> {
             return Center(
               child: Text(
                 'Impossible de récupérer les données : ${snapshot.error}',
-                style: PizzeriaStyle.errorTextStyle
+                style: PizzeriaStyle.errorTextStyle,
               ),
             );
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -60,12 +56,11 @@ class _PizzaListState extends State<PizzaList> {
     );
   }
 
-
   Widget _buildRow(Pizza pizza) {
     return Card(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(10.0), top: Radius.circular(2.0)
+          bottom: Radius.circular(10.0), top: Radius.circular(2.0),
         ),
       ),
       child: Column(
@@ -75,12 +70,12 @@ class _PizzaListState extends State<PizzaList> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza, cart: widget.cart)),
+                MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza)),
               );
             },
             child: _buildPizzaDetails(pizza),
           ),
-          BuyButtonWidget(pizza, widget.cart),
+          BuyButtonWidget(pizza),
         ],
       ),
     );
@@ -93,24 +88,21 @@ class _PizzaListState extends State<PizzaList> {
         ListTile(
           title: Text(pizza.title),
           subtitle: Text(pizza.garniture),
-          leading: Icon(Icons.local_pizza),
+          leading: const Icon(Icons.local_pizza),
         ),
         Image.network(
           '${PizzeriaService.imageUri}/${pizza.image}',
           height: 120,
           width: MediaQuery.of(context).size.width,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.error, size: 120),
         ),
         Container(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(pizza.garniture),
         ),
       ],
     );
   }
-
-
-
 }

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pizzeria/models/cart.dart';
+import 'package:pizzeria/ui/panier.dart';
 import 'package:pizzeria/ui/pizza_list.dart';
 import 'package:pizzeria/ui/share/appbar_widget.dart';
+import 'package:provider/provider.dart';
 import 'models/menu.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Cart(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,13 +26,16 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Notre pizzéria'),
+      routes: {
+        '/panier': (context) => const Panier(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
   final String title;
-  final Cart _cart = Cart();
+
   MyHomePage({required this.title, super.key});
 
   final _menus = [
@@ -37,8 +47,10 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var cart = context.watch<Cart>();
+
     return Scaffold(
-      appBar: AppBarWidget(title: title, cart: _cart),
+      appBar: AppBarWidget(title: title, cart: cart),
       body: ListView.builder(
         itemCount: _menus.length,
         itemBuilder: (context, index) => InkWell(
@@ -47,7 +59,7 @@ class MyHomePage extends StatelessWidget {
               case 2: // Pizza
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PizzaList(cart: _cart)),
+                  MaterialPageRoute(builder: (context) => PizzaList(cart: cart)),
                 );
                 break;
               default:
@@ -58,7 +70,6 @@ class MyHomePage extends StatelessWidget {
         ),
         itemExtent: 180,
       ),
-
     );
   }
 
@@ -83,7 +94,7 @@ class MyHomePage extends StatelessWidget {
             child: Center(
               child: Text(
                 menu.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Roboto',
                   fontSize: 28,
