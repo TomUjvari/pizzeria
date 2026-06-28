@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profil extends StatefulWidget {
-  const Profil({super.key});
+  final bool hideAppBar;
+
+  const Profil({super.key, this.hideAppBar = false});
 
   @override
   State<Profil> createState() => _ProfilState();
@@ -37,7 +39,10 @@ class _ProfilState extends State<Profil> {
       await prefs.setString('email', _emailController.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Informations enregistrées')),
+          const SnackBar(
+            backgroundColor: Colors.amber,
+            content: Text('Informations enregistrées', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+          ),
         );
       }
     }
@@ -45,71 +50,92 @@ class _ProfilState extends State<Profil> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mon Profil'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre nom';
-                  }
-                  return null;
-                },
+    Widget content = SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.amber,
+                    child: Icon(Icons.person, size: 60, color: Colors.black),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _addressController,
-                decoration: const InputDecoration(
-                  labelText: 'Adresse',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre adresse';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 40),
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Nom complet',
+                prefixIcon: Icon(Icons.person_outline, color: Colors.amber),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Mail',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre mail';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Veuillez entrer un mail valide';
-                  }
-                  return null;
-                },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Veuillez entrer votre nom';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _addressController,
+              decoration: const InputDecoration(
+                labelText: 'Adresse de livraison',
+                prefixIcon: Icon(Icons.home_outlined, color: Colors.amber),
               ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _saveUserData,
-                child: const Text('Enregistrer'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Veuillez entrer votre adresse';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Adresse e-mail',
+                prefixIcon: Icon(Icons.email_outlined, color: Colors.amber),
               ),
-            ],
-          ),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Veuillez entrer votre mail';
+                }
+                if (!value.contains('@')) {
+                  return 'Veuillez entrer un mail valide';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: _saveUserData,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('ENREGISTRER LES MODIFICATIONS'),
+            ),
+          ],
         ),
       ),
+    );
+
+    if (widget.hideAppBar) {
+      return content;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MON PROFIL'),
+      ),
+      body: content,
     );
   }
 

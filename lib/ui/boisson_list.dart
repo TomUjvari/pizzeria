@@ -40,7 +40,7 @@ class _BoissonListState extends State<BoissonList> {
               ),
             );
           }
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.amber));
         },
       ),
     );
@@ -48,7 +48,7 @@ class _BoissonListState extends State<BoissonList> {
 
   ListView _buildListView(List<Boisson> boissons) {
     return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: boissons.length,
       itemBuilder: (context, index) {
         return _buildRow(boissons[index]);
@@ -57,60 +57,61 @@ class _BoissonListState extends State<BoissonList> {
   }
 
   Widget _buildRow(Boisson boisson) {
-    return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(10.0), top: Radius.circular(2.0),
-        ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: PizzeriaStyle.surfaceColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => BoissonDetails(boisson: boisson)),
-              );
-            },
-            child: _buildBoissonDetails(boisson),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BoissonDetails(boisson: boisson)),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.amber.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.local_drink, size: 40, color: Colors.amber),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      boisson.title,
+                      style: PizzeriaStyle.headerTextStyle,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Taux de sucre : ${boisson.sugar}g',
+                      style: PizzeriaStyle.regularTextStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${boisson.price} €',
+                      style: PizzeriaStyle.subPriceTextStyle,
+                    ),
+                  ],
+                ),
+              ),
+              BuyButtonWidget(boisson),
+            ],
           ),
-          BuyButtonWidget(boisson),
-        ],
+        ),
       ),
-    );
-  }
-
-  Widget _buildBoissonDetails(Boisson boisson) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          title: Text(boisson.title),
-          subtitle: Text('Sucre : ${boisson.sugar}g'),
-          leading: const Icon(Icons.local_drink),
-        ),
-        // Image.network(
-        //   '${PizzeriaService.imageUri}/${boisson.image}',
-        //   height: 120,
-        //   width: MediaQuery.of(context).size.width,
-        //   fit: BoxFit.cover,
-        //   errorBuilder: (context, error, stackTrace) =>
-        //       const Icon(Icons.error, size: 120),
-        // ),
-        // Since we don't have images for drinks yet in the API description, 
-        // and imageUri points to pizzas, let's use a placeholder or check if they exist.
-        Container(
-          height: 120,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.blue.shade100,
-          child: const Icon(Icons.local_drink, size: 80, color: Colors.blue),
-        ),
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Prix : ${boisson.price}€'),
-        ),
-      ],
     );
   }
 }

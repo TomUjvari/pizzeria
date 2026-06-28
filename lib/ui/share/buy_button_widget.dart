@@ -15,30 +15,36 @@ class BuyButtonWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade800,
-              foregroundColor: Colors.white,
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.amber,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
             ),
-            onPressed: () {
-              cart.addProduct(_product);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${_product.title} ajouté au panier'),
-                  duration: const Duration(seconds: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+          onPressed: () {
+            cart.addProduct(_product);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.amber,
+                content: Text(
+                  '${_product.title} ajouté au panier',
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 ),
-              );
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.shopping_cart),
-                SizedBox(width: 5),
-                Text("Commander"),
-              ],
-            ),
+                duration: const Duration(seconds: 1),
+              ),
+            );
+          },
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add_shopping_cart, size: 20),
+              SizedBox(width: 8),
+              Text("AJOUTER AU PANIER"),
+            ],
           ),
         )
       ],

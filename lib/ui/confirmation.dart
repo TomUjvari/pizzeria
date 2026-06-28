@@ -29,45 +29,75 @@ class _ConfirmationState extends State<Confirmation> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Confirmation'),
+        title: const Text('CONFIRMATION'),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Type de commande', style: PizzeriaStyle.headerTextStyle),
-            Column(
-              children: _orderTypes.map((type) => RadioListTile<String>(
-                title: Text(type),
-                value: type,
-                groupValue: _orderType,
-                onChanged: (value) {
-                  setState(() {
-                    _orderType = value!;
-                  });
-                },
-              )).toList(),
+            _buildSectionHeader('TYPE DE COMMANDE'),
+            Container(
+              decoration: BoxDecoration(
+                color: PizzeriaStyle.surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: _orderTypes.map((type) => RadioListTile<String>(
+                  title: Text(type, style: const TextStyle(color: Colors.white70)),
+                  value: type,
+                  activeColor: Colors.amber,
+                  groupValue: _orderType,
+                  onChanged: (value) {
+                    setState(() {
+                      _orderType = value!;
+                    });
+                  },
+                )).toList(),
+              ),
             ),
-            const Divider(),
-            Text('Moyen de paiement', style: PizzeriaStyle.headerTextStyle),
-            Column(
-              children: _paymentMethods.map((method) => RadioListTile<String>(
-                title: Text(method),
-                value: method,
-                groupValue: _paymentMethod,
-                onChanged: (value) {
-                  setState(() {
-                    _paymentMethod = value!;
-                  });
-                },
-              )).toList(),
+            const SizedBox(height: 32),
+            _buildSectionHeader('MOYEN DE PAIEMENT'),
+            Container(
+              decoration: BoxDecoration(
+                color: PizzeriaStyle.surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: _paymentMethods.map((method) => RadioListTile<String>(
+                  title: Text(method, style: const TextStyle(color: Colors.white70)),
+                  value: method,
+                  activeColor: Colors.amber,
+                  groupValue: _paymentMethod,
+                  onChanged: (value) {
+                    setState(() {
+                      _paymentMethod = value!;
+                    });
+                  },
+                )).toList(),
+              ),
             ),
-            const Divider(),
-            _buildPriceRow('Total HT', format.format(totalHT)),
-            _buildPriceRow('TVA (20%)', format.format(tva)),
-            _buildPriceRow('Total TTC', format.format(totalTTC), isTotal: true),
-            const SizedBox(height: 24),
+            const SizedBox(height: 40),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.amber.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.amber.withOpacity(0.1)),
+              ),
+              child: Column(
+                children: [
+                  _buildPriceRow('Total HT', format.format(totalHT)),
+                  _buildPriceRow('TVA (20%)', format.format(tva)),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Divider(color: Colors.white10),
+                  ),
+                  _buildPriceRow('TOTAL À PAYER', format.format(totalTTC), isTotal: true),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -75,14 +105,26 @@ class _ConfirmationState extends State<Confirmation> {
                   _showConfirmationDialog(context, cart);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
                 ),
-                child: const Text('Commander'),
+                child: const Text('CONFIRMER LA COMMANDE', style: TextStyle(letterSpacing: 1.2)),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
+      child: Text(
+        title,
+        style: PizzeriaStyle.headerTextStyle.copyWith(
+          color: Colors.amber.withOpacity(0.7),
+          fontSize: 14,
+          letterSpacing: 2,
         ),
       ),
     );
@@ -94,8 +136,8 @@ class _ConfirmationState extends State<Confirmation> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: isTotal ? PizzeriaStyle.priceTotalTextStyle : PizzeriaStyle.regularTextStyle),
-          Text(value, style: isTotal ? PizzeriaStyle.priceTotalTextStyle : PizzeriaStyle.regularTextStyle),
+          Text(label, style: isTotal ? PizzeriaStyle.priceTotalTextStyle : PizzeriaStyle.priceSubTotalTextStyle),
+          Text(value, style: isTotal ? PizzeriaStyle.priceTotalTextStyle : PizzeriaStyle.priceSubTotalTextStyle),
         ],
       ),
     );
@@ -106,15 +148,17 @@ class _ConfirmationState extends State<Confirmation> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Commande confirmée'),
-          content: const Text('Votre commande a été enregistrée avec succès !'),
+          backgroundColor: const Color(0xFF1E1E1E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Commande confirmée', style: TextStyle(color: Colors.amber)),
+          content: const Text('Votre commande a été enregistrée avec succès !', style: TextStyle(color: Colors.white70)),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('SUPER', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
               onPressed: () {
                 cart.clear();
-                Navigator.of(context).pop(); // Fermer le dialog
-                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false); // Retour au menu principal
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
               },
             ),
           ],

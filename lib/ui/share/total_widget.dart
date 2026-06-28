@@ -13,27 +13,17 @@ class TotalWidget extends StatelessWidget {
     String totalAffiche = format.format(total);
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.only(left: 12.0),
-            child: Text(
-              'TOTAL',
-              style: PizzeriaStyle.priceTotalTextStyle,
-              textAlign: TextAlign.end,
-            ),
-          ),
+        Text(
+          'PRIX TOTAL',
+          style: PizzeriaStyle.priceSubTotalTextStyle,
         ),
-        Expanded(
-          child: Text(
-            totalAffiche,
-            style: PizzeriaStyle.priceTotalTextStyle,
-            textAlign: TextAlign.end,
-          ),
+        Text(
+          totalAffiche,
+          style: PizzeriaStyle.priceTotalTextStyle,
         ),
       ],
     );
   }
-
-
 }

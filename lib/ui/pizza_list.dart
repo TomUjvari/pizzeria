@@ -58,51 +58,79 @@ class _PizzaListState extends State<PizzaList> {
 
   Widget _buildRow(Pizza pizza) {
     return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(10.0), top: Radius.circular(2.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza)),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Image.network(
+                  '${PizzeriaService.imageUri}/${pizza.image}',
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(
+                        height: 180,
+                        color: Colors.grey[800],
+                      child: const Icon(Icons.local_pizza, size: 64, color: Colors.white24),
+                      ),
+                ),
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${pizza.price} €',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    pizza.title,
+                    style: PizzeriaStyle.headerTextStyle.copyWith(fontSize: 22),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    pizza.garniture,
+                    style: PizzeriaStyle.regularTextStyle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: BuyButtonWidget(pizza),
+            ),
+          ],
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PizzaDetails(pizza: pizza)),
-              );
-            },
-            child: _buildPizzaDetails(pizza),
-          ),
-          BuyButtonWidget(pizza),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPizzaDetails(Pizza pizza) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          title: Text(pizza.title),
-          subtitle: Text(pizza.garniture),
-          leading: const Icon(Icons.local_pizza),
-        ),
-        Image.network(
-          '${PizzeriaService.imageUri}/${pizza.image}',
-          height: 120,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.error, size: 120),
-        ),
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(pizza.garniture),
-        ),
-      ],
     );
   }
 }
