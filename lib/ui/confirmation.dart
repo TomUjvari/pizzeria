@@ -154,7 +154,7 @@ class _ConfirmationState extends State<Confirmation> {
           content: const Text('Votre commande a été enregistrée avec succès !', style: TextStyle(color: Colors.white70)),
           actions: <Widget>[
             TextButton(
-              child: const Text('SUPER', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+              child: const Text('OK', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
               onPressed: () {
                 cart.clear();
                 Navigator.of(context).pop();

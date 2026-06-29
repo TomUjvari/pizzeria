@@ -84,9 +84,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MainScreen(),
-        '/panier': (context) => const Panier(), // Kept for direct navigation if needed
+        '/panier': (context) => const Panier(),
         '/confirmation': (context) => const Confirmation(),
-        '/profil': (context) => const Profil(), // Kept for direct navigation if needed
+        '/profil': (context) => const Profil(),
       },
     );
   }
@@ -102,22 +102,21 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    const MyHomePageContent(),
-    const Panier(hideAppBar: true),
-    const Profil(hideAppBar: true),
-  ];
-
-  static final List<String> _titles = [
-    'NOTRE PIZZÉRIA',
-    'MON PANIER',
-    'MON PROFIL',
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == _selectedIndex) {
+      // Pop to root of the current tab if tapped again
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -125,43 +124,76 @@ class _MainScreenState extends State<MainScreen> {
     var cart = context.watch<Cart>();
     int totalItems = cart.totalItems();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
-      ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _widgetOptions,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
-            icon: Badge(
-              label: Text('$totalItems'),
-              isLabelVisible: totalItems > 0,
-              child: const Icon(Icons.shopping_cart_outlined),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        final NavigatorState? navigator = _navigatorKeys[_selectedIndex].currentState;
+        if (navigator != null && navigator.canPop()) {
+          navigator.pop();
+        } else if (_selectedIndex != 0) {
+          setState(() {
+            _selectedIndex = 0;
+          });
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            _buildNavigator(0, const MyHomePageContent()),
+            _buildNavigator(1, const Panier()),
+            _buildNavigator(2, const Profil()),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Accueil',
             ),
-            activeIcon: Badge(
-              label: Text('$totalItems'),
-              isLabelVisible: totalItems > 0,
-              child: const Icon(Icons.shopping_cart),
+            BottomNavigationBarItem(
+              icon: Badge(
+                label: Text('$totalItems'),
+                isLabelVisible: totalItems > 0,
+                child: const Icon(Icons.shopping_cart_outlined),
+              ),
+              activeIcon: Badge(
+                label: Text('$totalItems'),
+                isLabelVisible: totalItems > 0,
+                child: const Icon(Icons.shopping_cart),
+              ),
+              label: 'Panier',
             ),
-            label: 'Panier',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Profil',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
       ),
+    );
+  }
+
+  Widget _buildNavigator(int index, Widget rootPage) {
+    return Navigator(
+      key: _navigatorKeys[index],
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) {
+            // Handle named routes inside tabs
+            if (settings.name == '/confirmation') {
+              return const Confirmation();
+            }
+            return rootPage;
+          },
+        );
+      },
     );
   }
 }
@@ -180,30 +212,35 @@ class MyHomePageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     var cart = context.watch<Cart>();
 
-    return ListView.builder(
-      itemCount: _menus.length,
-      itemBuilder: (context, index) => InkWell(
-        onTap: () {
-          switch (_menus[index].type) {
-            case 2: // Pizza
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PizzaList(cart: cart)),
-              );
-              break;
-            case 4: // Boissons
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const BoissonList()),
-              );
-              break;
-            default:
-            // Assuming there is a default case or handling for other types
-          }
-        },
-        child: _buildRow(_menus[index]),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('NOTRE PIZZÉRIA'),
       ),
-      itemExtent: 180,
+      body: ListView.builder(
+        itemCount: _menus.length,
+        itemBuilder: (context, index) => InkWell(
+          onTap: () {
+            switch (_menus[index].type) {
+              case 2: // Pizza
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PizzaList(cart: cart)),
+                );
+                break;
+              case 4: // Boissons
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BoissonList()),
+                );
+                break;
+              default:
+              // Assuming there is a default case or handling for other types
+            }
+          },
+          child: _buildRow(_menus[index]),
+        ),
+        itemExtent: 180,
+      ),
     );
   }
 
