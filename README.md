@@ -1,17 +1,9 @@
-# pizzeria
+# Pizzeria
 
 Rattrapage TD Pizzeria
 
-## Getting Started
+## Lancer le projet
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Lancez la commande `flutter pub get` pour installer les dépendances.
+- Déplacez-vous dans le dossier `Server` et lancez la commande `docker-compose up -d`
+<br>N'hésitez pas à effacer les données de l'émulateur Android si un problème survient pendant le lancement de l'application flutter.
