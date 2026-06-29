@@ -13,6 +13,7 @@ class Pizza extends Product {
   static final List<OptionItem> pates = [
     OptionItem(0, "Pâte fine"),
     OptionItem(1, "Pâte épaisse", supplement: 1),
+    OptionItem(1, "Pâte garnie", supplement: 2),
   ];
 
   static final List<OptionItem> tailles = [
@@ -24,7 +25,7 @@ class Pizza extends Product {
 
   static final List<OptionItem> sauces = [
     OptionItem(0, "Base sauce tomate"),
-    OptionItem(1, "Sauce Samouraï", supplement: 2),
+    OptionItem(0, "Base crème fraîche"),
   ];
 
   @override

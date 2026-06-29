@@ -4,6 +4,8 @@ import 'package:pizzeria/ui/boisson_list.dart';
 import 'package:pizzeria/ui/confirmation.dart';
 import 'package:pizzeria/ui/panier.dart';
 import 'package:pizzeria/ui/pizza_list.dart';
+import 'package:pizzeria/ui/salade_list.dart';
+import 'package:pizzeria/ui/dessert_list.dart';
 import 'package:pizzeria/ui/profil.dart';
 import 'package:provider/provider.dart';
 import 'models/menu.dart';
@@ -202,7 +204,7 @@ class MyHomePageContent extends StatelessWidget {
   const MyHomePageContent({super.key});
 
   final _menus = const [
-    Menu(1, 'Entrées', 'entree.jpg', Colors.lightGreen),
+    Menu(1, 'Salades', 'salade.jpg', Colors.lightGreen),
     Menu(2, 'Pizzas', 'pizza.jpg', Colors.redAccent),
     Menu(3, 'Desserts', 'dessert.jpg', Colors.brown),
     Menu(4, 'Boissons', 'boisson.jpg', Colors.lightBlue),
@@ -221,10 +223,22 @@ class MyHomePageContent extends StatelessWidget {
         itemBuilder: (context, index) => InkWell(
           onTap: () {
             switch (_menus[index].type) {
+              case 1: // Salades
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SaladeList()),
+                );
+                break;
               case 2: // Pizza
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => PizzaList(cart: cart)),
+                );
+                break;
+              case 3: // Desserts
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DessertList()),
                 );
                 break;
               case 4: // Boissons
