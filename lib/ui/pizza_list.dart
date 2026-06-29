@@ -5,6 +5,7 @@ import 'package:pizzeria/ui/share/buy_button_widget.dart';
 import 'package:pizzeria/ui/share/pizzeria_style.dart';
 import '../models/pizza.dart';
 import '../service/pizzeria_service.dart';
+import '../services/pizza_storage.dart';
 
 class PizzaList extends StatefulWidget {
   const PizzaList({super.key, cart}); // Keep cart for compatibility if needed
@@ -16,11 +17,28 @@ class PizzaList extends StatefulWidget {
 class _PizzaListState extends State<PizzaList> {
   late Future<List<Pizza>> _pizzas;
   final PizzeriaService _service = PizzeriaService();
+  final PizzaStorage _storage = PizzaStorage();
+  List<Pizza> _actualPizzas = [];
 
   @override
   void initState() {
     super.initState();
-    _pizzas = _service.fetchPizzas();
+    _pizzas = _loadPizzas();
+  }
+
+  Future<List<Pizza>> _loadPizzas() async {
+    List<Pizza> list = await _storage.loadPizzas();
+    if (list.isEmpty) {
+      list = await _service.fetchPizzas();
+    }
+    _actualPizzas = list;
+    return list;
+  }
+
+  @override
+  void dispose() {
+    _storage.savePizzas(_actualPizzas);
+    super.dispose();
   }
 
   @override

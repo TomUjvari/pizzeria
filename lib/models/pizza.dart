@@ -46,5 +46,22 @@ class Pizza extends Product {
           title: json['title'],
           image: json['image'],
           price: json["price"].toDouble(),
-        );
+        ) {
+    pate = json['pate'] ?? 0;
+    taille = json['taille'] ?? 1;
+    sauce = json['sauce'] ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'garniture': garniture,
+      'image': image,
+      'price': price,
+      'pate': pate,
+      'taille': taille,
+      'sauce': sauce,
+    };
+  }
 }
