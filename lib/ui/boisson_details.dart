@@ -6,6 +6,7 @@ import 'package:pizzeria/ui/share/total_widget.dart';
 
 import '../models/option_item.dart';
 import '../models/boisson.dart';
+import '../service/pizzeria_service.dart';
 
 class BoissonDetails extends StatefulWidget {
   final Boisson boisson;
@@ -28,11 +29,20 @@ class _BoissonDetailsState extends State<BoissonDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 250,
-              width: double.infinity,
-              color: Colors.amber.withOpacity(0.1),
-              child: const Icon(Icons.local_drink, size: 120, color: Colors.amber),
+            Hero(
+              tag: 'boisson-${widget.boisson.id}',
+              child: Image.network(
+                '${PizzeriaService.boissonImageUri}/${widget.boisson.image}',
+                height: 250,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(
+                      height: 250,
+                      color: Colors.grey[800],
+                      child: const Icon(Icons.local_drink, size: 100, color: Colors.white24),
+                    ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),

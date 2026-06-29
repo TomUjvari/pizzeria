@@ -57,13 +57,9 @@ class _BoissonListState extends State<BoissonList> {
   }
 
   Widget _buildRow(Boisson boisson) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: PizzeriaStyle.surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-      ),
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -71,45 +67,69 @@ class _BoissonListState extends State<BoissonList> {
             MaterialPageRoute(builder: (context) => BoissonDetails(boisson: boisson)),
           );
         },
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Hero(
+                  tag: 'boisson-${boisson.id}',
+                  child: Image.network(
+                    '${PizzeriaService.boissonImageUri}/${boisson.image}',
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Container(
+                          height: 180,
+                          color: Colors.grey[800],
+                          child: const Icon(Icons.local_drink, size: 64, color: Colors.white24),
+                        ),
+                  ),
                 ),
-                child: const Icon(Icons.local_drink, size: 40, color: Colors.amber),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      boisson.title,
-                      style: PizzeriaStyle.headerTextStyle,
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Taux de sucre : ${boisson.sugar}g',
-                      style: PizzeriaStyle.regularTextStyle,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
+                    child: Text(
                       '${boisson.price} €',
-                      style: PizzeriaStyle.subPriceTextStyle,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ],
+                  ),
                 ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    boisson.title,
+                    style: PizzeriaStyle.headerTextStyle.copyWith(fontSize: 22),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Taux de sucre : ${boisson.sugar}g',
+                    style: PizzeriaStyle.regularTextStyle,
+                  ),
+                ],
               ),
-              BuyButtonWidget(boisson),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: BuyButtonWidget(boisson),
+            ),
+          ],
         ),
       ),
     );

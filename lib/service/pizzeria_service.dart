@@ -13,6 +13,7 @@ class PizzeriaService {
   static final String imageUri = 'http://10.0.2.2:8080/static/images/pizzas';
   static final String saladeImageUri = 'http://10.0.2.2:8080/static/images/salades';
   static final String dessertImageUri = 'http://10.0.2.2:8080/static/images/desserts';
+  static final String boissonImageUri = 'http://10.0.2.2:8080/static/images/boissons';
 
   Future<List<Pizza>> fetchPizzas() async {
     List<Pizza> list = [];
